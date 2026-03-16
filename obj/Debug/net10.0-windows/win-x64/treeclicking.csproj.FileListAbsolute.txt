@@ -1,0 +1,10 @@
+D:\EXILEAPI\Plugins\Temp\treeclicking\TreeClicking.deps.json
+D:\EXILEAPI\Plugins\Temp\treeclicking\TreeClicking.dll
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\treeclicking.csproj.AssemblyReference.cache
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\treeclicking.GeneratedMSBuildEditorConfig.editorconfig
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\treeclicking.AssemblyInfoInputs.cache
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\treeclicking.AssemblyInfo.cs
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\treeclicking.csproj.CoreCompileInputs.cache
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\TreeClicking.dll
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\refint\TreeClicking.dll
+D:\EXILEAPI\Plugins\Source\treeclicking\obj\Debug\net10.0-windows\win-x64\ref\TreeClicking.dll
