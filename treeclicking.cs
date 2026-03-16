@@ -90,7 +90,7 @@ namespace TreeClicking
 
                     LogMessage($"[TreeClicking] Clicking TreeTree at {labelPt}.");
                     Mouse.PauseContainment();
-                    Mouse.LeftClick(labelPt, cfg.ClickMinDurationMs.Value, cfg.ClickMaxDurationMs.Value);
+                    SmoothClick(labelPt, cfg);
                     Mouse.ResumeContainment();
 
                     // Wait for Genesis Tree window to open
@@ -111,21 +111,26 @@ namespace TreeClicking
                     LogMessage("[TreeClicking] Genesis Tree opened.");
                 }
 
-                // ── STEP 2: Womb slot container [2][0][2] ─────────────────────
+                // ── STEP 2: Womb slot container: GenesisTreeWindow[2][0] ──────
+                // PathFromRoot confirmed: 31->2->0->x->0 where x = slot index
                 var wombSlotContainer = genesisTreeWindow
                     .Children?.ElementAtOrDefault(2)
-                    ?.Children?.ElementAtOrDefault(0)
-                    ?.Children?.ElementAtOrDefault(2);
+                    ?.Children?.ElementAtOrDefault(0);
 
                 if (wombSlotContainer == null)
                 {
-                    LogError("[TreeClicking] Cannot reach womb slot container [2][0][2].");
+                    LogError("[TreeClicking] Cannot reach womb slot container [2][0].");
                     return true;
                 }
 
                 // ── STEP 3: Pick configured slot (1-4 → index 0-3) ───────────
-                int slotIndex = cfg.WombSlot.Value - 1;
-                var wombSlot  = wombSlotContainer.Children?.ElementAtOrDefault(slotIndex);
+                // Slot 1 (index 0) = Equipment Item Womb
+                // Slot 2 (index 1) = Currency Item Womb
+                // Slot 3 (index 2) = Unique Item Womb
+                // Slot 4 (index 3) = Mysterious Item Womb
+                int slotIndex    = cfg.WombSlot.Value - 1;
+                var wombSlotWrap = wombSlotContainer.Children?.ElementAtOrDefault(slotIndex);
+                var wombSlot     = wombSlotWrap?.Children?.ElementAtOrDefault(0) ?? wombSlotWrap;
 
                 if (wombSlot == null || !wombSlot.IsVisible)
                 {
@@ -138,7 +143,7 @@ namespace TreeClicking
 
                 // ── STEP 4: Left-click to open womb popup ─────────────────────
                 Mouse.PauseContainment();
-                Mouse.LeftClick(slotCenter, cfg.ClickMinDurationMs.Value, cfg.ClickMaxDurationMs.Value);
+                SmoothClick(slotCenter, cfg);
                 Mouse.ResumeContainment();
 
                 // Wait for popup
@@ -149,7 +154,7 @@ namespace TreeClicking
                 // ── STEP 5: Ctrl+Click same spot — grow instantly ─────────────
                 Mouse.PauseContainment();
                 Keyboard.KeyDown(Keys.ControlKey);
-                Mouse.LeftClick(slotCenter, cfg.ClickMinDurationMs.Value, cfg.ClickMaxDurationMs.Value);
+                SmoothClick(slotCenter, cfg);
                 Keyboard.KeyUp(Keys.ControlKey);
                 Mouse.ResumeContainment();
 
@@ -209,6 +214,26 @@ namespace TreeClicking
             }
             catch { }
             return System.Drawing.Point.Empty;
+        }
+
+        /// <summary>
+        /// Moves the cursor smoothly to <paramref name="target"/> (if smooth move is enabled)
+        /// then performs a left click with randomised hold duration.
+        /// </summary>
+        private void SmoothClick(System.Drawing.Point target, TreeClickingSettings cfg)
+        {
+            var sm = cfg.SmoothMove;
+            if (sm.Enable.Value)
+            {
+                Mouse.SmoothMoveTo(
+                    target,
+                    sm.MinMoveDurationMs.Value,
+                    sm.MaxMoveDurationMs.Value,
+                    sm.MaxRandomOffset.Value,
+                    sm.MinStepDelayMs.Value,
+                    sm.MaxStepDelayMs.Value);
+            }
+            Mouse.LeftClick(target, cfg.ClickMinDurationMs.Value, cfg.ClickMaxDurationMs.Value);
         }
 
         private System.Drawing.Point GetScreenCenter(ExileCore.PoEMemory.Element element)
