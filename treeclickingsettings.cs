@@ -49,10 +49,10 @@ namespace TreeClicking
         public ToggleNode Enable { get; set; } = new ToggleNode(true);
 
         [Menu("Min Move Duration (ms)", "Minimum time for cursor to travel to target.", 1)]
-        public RangeNode<int> MinMoveDurationMs { get; set; } = new RangeNode<int>(80, 5, 500);
+        public RangeNode<int> MinMoveDurationMs { get; set; } = new RangeNode<int>(250, 5, 500);
 
         [Menu("Max Move Duration (ms)", "Maximum time for cursor to travel to target.", 2)]
-        public RangeNode<int> MaxMoveDurationMs { get; set; } = new RangeNode<int>(140, 10, 1000);
+        public RangeNode<int> MaxMoveDurationMs { get; set; } = new RangeNode<int>(300, 10, 1000);
 
         [Menu("Max Random Offset (px)", "Max pixel wobble from the straight path.", 3)]
         public RangeNode<int> MaxRandomOffset { get; set; } = new RangeNode<int>(3, 0, 20);
