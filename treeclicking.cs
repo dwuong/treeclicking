@@ -65,6 +65,19 @@ namespace TreeClicking
                 var cfg      = Settings;
                 var ingameUi = GameController.IngameState.IngameUi;
 
+                // ── Hiveblood stop check ───────────────────────────────────────
+                if (cfg.HivebloodStopThreshold.Value > 0)
+                {
+                    int hiveblood = ReadHiveblood(ingameUi);
+                    if (hiveblood >= 0 && hiveblood < cfg.HivebloodStopThreshold.Value)
+                    {
+                        LogMessage($"[TreeClicking] Hiveblood {hiveblood} < threshold {cfg.HivebloodStopThreshold.Value} — stopping loop.");
+                        _loopRunning = false;
+                        _operation   = null;
+                        return true;
+                    }
+                }
+
                 // ── STEP 1: Click the TreeTree ground label if tree not open ──
                 var genesisTreeWindow = ingameUi.Children?.ElementAtOrDefault(31);
                 bool treeAlreadyOpen  = genesisTreeWindow != null && genesisTreeWindow.IsVisible;
@@ -182,6 +195,35 @@ namespace TreeClicking
         // ══════════════════════════════════════════════════════════════════════
         // HELPERS
         // ══════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Reads the Hiveblood value from the Genesis Tree window.
+        /// Path confirmed from inspector: (GenesisTreeWindow)31->4->0->0->0
+        /// Text format: "Hiveblood: 669"
+        /// Returns the integer value, or -1 if not found / not parseable.
+        /// </summary>
+        private int ReadHiveblood(IngameUIElements ingameUi)
+        {
+            try
+            {
+                var el = ingameUi.Children?.ElementAtOrDefault(31)
+                    ?.Children?.ElementAtOrDefault(4)
+                    ?.Children?.ElementAtOrDefault(0)
+                    ?.Children?.ElementAtOrDefault(0)
+                    ?.Children?.ElementAtOrDefault(0);
+
+                var text = el?.Text;
+                if (string.IsNullOrEmpty(text)) return -1;
+
+                // Text format: "Hiveblood: 669"
+                var colon = text.IndexOf(':');
+                if (colon < 0) return -1;
+                var numStr = text.Substring(colon + 1).Trim();
+                if (int.TryParse(numStr, out var val)) return val;
+            }
+            catch { }
+            return -1;
+        }
 
         private LabelOnGround FindTreeTreeLabel()
         {
